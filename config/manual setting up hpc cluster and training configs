@@ -1,0 +1,52 @@
+pip install conda
+conda create -n Deep_Learning python==3.9.11
+conda activate Deep_Learning
+conda install -c conda-forge cudnn
+conda install -c conda-forge cudatoolkit=11.6.0=habf752d_10
+conda install -c pytorch
+
+
+Training config:
+
+image_resize_x = 224
+image_resize_y = 224
+
+channels = 3
+
+BATCH_SIZE = 16
+
+GHI_normalization_ratio = 1466
+RGB_normalization_ratio = 255
+set_random_seed(1234)
+'shuffle': True
+
+lr_reducer = ReduceLROnPlateau(monitor='val_loss',
+                               mode='min',
+                               factor=0.3,
+                               cooldown=1,
+                               patience=8,
+                               min_delta=0.0001,
+                               verbose=1)
+                               
+earlystopper = EarlyStopping(monitor='val_loss',
+                             patience=15,
+                             verbose=1, 
+                             min_delta=0.00001, 
+                             mode='min')
+                             
+inputs = Input(shape=(image_resize_x, image_resize_y, channels))
+base = ResNet50V2(weights='imagenet', include_top=False)
+
+x = base(inputs, training=True)
+x = GlobalAveragePooling2D()(x)
+outputs = Dense(1)(x)
+model = Model(inputs, outputs)
+
+ADAM = optimizers.Adam(learning_rate=0.0001)
+
+model.compile(optimizer=ADAM, loss='mse')
+
+epochs = 100
+
+steps_before = 30 # in minutes
+steps_after = 30 # in minutes

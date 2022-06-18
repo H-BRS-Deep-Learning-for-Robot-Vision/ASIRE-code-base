@@ -108,7 +108,7 @@ for j in range(len(total_days)):
         (cs_bool*500).plot(ax=ax)
         plt.savefig('/scratch/vkalag2s/ASIRE-code-base/clear_sky_images/'+total_days[j].strftime("%Y-%m-%d")+'.png')
         plt.close()
-clear_sky_bool_df['file_paths'] = image_data[image_data.columns[1]]
+clear_sky_bool_df['file_paths'] = image_data[0]
 clear_sky_bool_df['ghi'] = rad_data['ghi']
 
 clear_sky_true = clear_sky_bool_df[clear_sky_bool_df['clear_sky'] == "true"]

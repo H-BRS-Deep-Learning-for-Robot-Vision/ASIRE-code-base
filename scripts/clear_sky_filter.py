@@ -106,4 +106,8 @@ for j in range(len(total_days)):
         (cs_bool*500).plot(ax=ax)
         plt.savefig('/scratch/rselva2s/DLRV/clear_sky_images/'+total_days[j].strftime("%Y-%m-%d")+'.png')
         plt.close()
+
+
+
 clear_sky_bool_df.to_csv('/scratch/rselva2s/DLRV/clear_sky_bool_df.csv')
+clear_sky_bool_df 

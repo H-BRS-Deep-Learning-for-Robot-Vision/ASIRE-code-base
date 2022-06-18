@@ -5,9 +5,10 @@ Created on Mon May  19 17:07:57 2022
 
 @author: Samer Chaaraoui
 """
-
+from tabulate import tabulate
 
 import numpy as np
+from sympy import im
 np.random.seed(1234) # set seed for randomizer to get the same split for train, val and test dataset
 
 import pandas as pd
@@ -19,7 +20,7 @@ from pvlib.location import Location
 from pvlib import clearsky
 
 ### if days plots should be plotted and saved
-plot_and_save_fig = True # set False if you dont want to plot the figures and save them
+plot_and_save_fig = False # set False if you dont want to plot the figures and save them
 
 ### Location infromation of the measurment site. Information is from the paper of Pedro et. al. 2019. This is necessary for PVLIB clear-sky detection
 
@@ -44,6 +45,14 @@ image_data = image_data.set_index(pd.to_datetime([w[-19:-4] for w in filepaths_i
 
 image_data.index = image_data.index.tz_localize('utc').tz_convert('America/Los_Angeles') # set the timezone from utc to los angeles timezone
 
+
+
+keys = ["S.no",'image_timestamp','image_path']
+image_data = image_data.reset_index()
+print(tabulate(image_data,headers=keys,tablefmt='psql'))
+
+
+
 ### read the radiation data file
 filepaths_raddata = '/media/ravi/ubuntu_disk/ravi/DLRV/dataset/Folsom_irradiance.csv'
 rad_data = pd.read_csv(filepaths_raddata, index_col='timeStamp', parse_dates=True, usecols=['timeStamp','ghi'])
@@ -59,7 +68,6 @@ image_data.index = half_up_minute_idx(image_data.index)
 
 image_data = image_data[~image_data.index.duplicated(keep='first')] # in case of duplicates due to "half_up_minute_idx"
 
-print(image_data)
 
 dataset = np.unique(image_data.index.date)
 
@@ -86,7 +94,6 @@ steps_after=30
 
 for j in range(len(total_days)):
 
-    print(j)
   
     start_ts = str(image_data.loc[total_days[j].strftime("%Y-%m-%d")].iloc[0].name)
     end_ts = str(image_data.loc[total_days[j].strftime("%Y-%m-%d")].iloc[-1].name)
@@ -95,7 +102,7 @@ for j in range(len(total_days)):
     dateindex = dateindex.rename(columns={0: "frame"})
     dateindex['available'] = 1
     dateindex = dateindex.reindex(pd.date_range(start_ts, end_ts, freq='min'))
-    print(dateindex.isna().sum())
+    # print(dateindex.isna().sum())
     try:
         rad_data_temp = rad_data.loc[dateindex.index]
     except KeyError:
@@ -111,3 +118,22 @@ for j in range(len(total_days)):
         plt.close()
 
 clear_sky_bool_df.to_csv('/media/ravi/ubuntu_disk/ravi/DLRV/output_files/clear_sky_bool_df.csv')
+
+
+
+
+
+# save the filename of images from image_data to the clear_sky_bool_df
+for i in range(len(image_data)):
+    if clear_sky_bool_df.iloc[i]['clear_sky'] == True:
+        clear_sky_bool_df.iloc[i]['filename'] = image_data.iloc[i][0]
+
+# clear_sky_bool_true = clear_sky_bool_df[clear_sky_bool_df["clear_sky"]=="true"]
+clear_sky_bool_df.to_csv("/media/ravi/ubuntu_disk/ravi/DLRV/output_files/clear_sky_bool_df_true.csv")
+
+for i in range(len(clear_sky_bool_df)):
+    if clear_sky_bool_df.iloc[i]['clear_sky'] == False:
+        clear_sky_bool_df.iloc[i]['filename'] = image_data.iloc[i][0]
+
+# clear_sky_bool_false = clear_sky_bool_df[clear_sky_bool_df["clear_sky"]=="false"]
+clear_sky_bool_df.to_csv("/media/ravi/ubuntu_disk/ravi/DLRV/output_files/clear_sky_bool_df_false.csv")

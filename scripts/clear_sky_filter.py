@@ -108,5 +108,11 @@ for j in range(len(total_days)):
         (cs_bool*500).plot(ax=ax)
         plt.savefig('/scratch/vkalag2s/ASIRE-code-base/clear_sky_images/'+total_days[j].strftime("%Y-%m-%d")+'.png')
         plt.close()
-clear_sky_bool_df.to_csv('/scratch/vkalag2s/ASIRE-code-base/clear_sky_bool_df.csv')
-image_data.to_csv('/scratch/vkalag2s/ASIRE-code-base/image_data.csv')
+clear_sky_bool_df['file_paths'] = image_data[:,1]
+clear_sky_bool_df['ghi'] = rad_data['ghi']
+
+clear_sky_true = clear_sky_bool_df[clear_sky_bool_df['clear_sky'] == "true"]
+clear_sky_false = clear_sky_bool_df[clear_sky_bool_df['clear_sky'] == "false"]
+
+clear_sky_true.to_csv('/scratch/vkalag2s/ASIRE-code-base/clear_sky_true.csv')
+clear_sky_true.to_csv('/scratch/vkalag2s/ASIRE-code-base/clear_sky_false.csv')

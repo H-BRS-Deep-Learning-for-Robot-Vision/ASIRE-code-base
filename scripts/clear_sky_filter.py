@@ -81,7 +81,7 @@ clear_sky_bool_df = pd.DataFrame(index=rad_data_idx, columns=['clear_sky'], data
 
 steps_before=30
 steps_after=30
-
+print("total data _length", len(total_days))
 for j in range(len(total_days)):
     print(j)
   
@@ -101,9 +101,22 @@ for j in range(len(total_days)):
     cs_bool = clearsky.detect_clearsky(measured=rad_data_temp.squeeze(), clearsky=cs, times=cs.index, window_length=10, max_iterations=100).to_frame()
     cs_bool = cs_bool.rename(columns={0:'clear_sky'})
     clear_sky_bool_df.loc[cs_bool.index, :] = cs_bool[:]
+   
     if plot_and_save_fig == True:   
         ax = rad_data_temp.plot()
         (cs_bool*500).plot(ax=ax)
         plt.savefig('/scratch/tsethu2s/ASIRE-code-base/clear_sky_images/'+total_days[j].strftime("%Y-%m-%d")+'.png')
         plt.close()
-clear_sky_bool_df.to_csv('/scratch/rselva2s/DLRV/clear_sky_bool_df.csv')
+clear_sky_bool_df.to_csv('/scratch/tsethu2s/ASIRE-code-base/clear_sky_bool_df.csv')
+
+clear_sky_bool_df["image_files"]=image_data[0]
+clear_sky_bool_df["ghi"]=rad_data["ghi"]
+
+clear_sky_bool_df.to_csv("/scratch/tsethu2s/ASIRE-code-base/all_data.csv")
+clear_sky_bool_true = clear_sky_bool_df[clear_sky_bool_df["clear_sky"]=="true"]
+
+clear_sky_bool_true.to_csv("/scratch/tsethu2s/ASIRE-code-base/true_data.csv")
+
+clear_sky_bool_false = clear_sky_bool_df[clear_sky_bool_df["clear_sky"]=="false"]
+
+clear_sky_bool_false.to_csv("/scratch/tsethu2s/ASIRE-code-base/false_data.csv")

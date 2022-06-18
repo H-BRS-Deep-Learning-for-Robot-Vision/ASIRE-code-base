@@ -104,6 +104,6 @@ for j in range(len(total_days)):
     if plot_and_save_fig == True:   
         ax = rad_data_temp.plot()
         (cs_bool*500).plot(ax=ax)
-        plt.savefig('/scratch/rselva2s/DLRV/clear_sky_images/'+total_days[j].strftime("%Y-%m-%d")+'.png')
+        plt.savefig('/scratch/rvkalag2s/ASIRE-code-base/clear_sky_images/'+total_days[j].strftime("%Y-%m-%d")+'.png')
         plt.close()
-clear_sky_bool_df.to_csv('/scratch/rselva2s/DLRV/clear_sky_bool_df.csv')
+clear_sky_bool_df.to_csv('/scratch/vkalag2s/ASIRE-code-base/clear_sky_bool_df.csv')

@@ -63,6 +63,8 @@ dataset = np.unique(image_data.index.date)
 
 total_days = dataset
 
+print(total_days)
+
 val_test_ratio = int(len(dataset)*0.1)
 
 index = np.random.choice(dataset.shape[0], val_test_ratio, replace=False)
@@ -104,6 +106,7 @@ for j in range(len(total_days)):
     if plot_and_save_fig == True:   
         ax = rad_data_temp.plot()
         (cs_bool*500).plot(ax=ax)
-        plt.savefig('/scratch/rvkalag2s/ASIRE-code-base/clear_sky_images/'+total_days[j].strftime("%Y-%m-%d")+'.png')
+        plt.savefig('/scratch/vkalag2s/ASIRE-code-base/clear_sky_images/'+total_days[j].strftime("%Y-%m-%d")+'.png')
         plt.close()
 clear_sky_bool_df.to_csv('/scratch/vkalag2s/ASIRE-code-base/clear_sky_bool_df.csv')
+image_data.to_csv('/scratch/vkalag2s/ASIRE-code-base/image_data.csv')

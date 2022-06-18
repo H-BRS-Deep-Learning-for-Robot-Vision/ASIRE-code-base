@@ -19,7 +19,7 @@ from pvlib.location import Location
 from pvlib import clearsky
 
 ### if days plots should be plotted and saved
-plot_and_save_fig = False
+plot_and_save_fig = True
 
 ### Location infromation of the measurment site. Information is from the paper of Pedro et. al. 2019. This is necessary for PVLIB clear-sky detection
 
@@ -106,3 +106,4 @@ for j in range(len(total_days)):
         (cs_bool*500).plot(ax=ax)
         plt.savefig('/scratch/tsethu2s/ASIRE-code-base/clear_sky_images/'+total_days[j].strftime("%Y-%m-%d")+'.png')
         plt.close()
+clear_sky_bool_df.to_csv('/scratch/rselva2s/DLRV/clear_sky_bool_df.csv')
